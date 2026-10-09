@@ -5,3 +5,4 @@ data/raw/
 checkpoints/*.pt
 !checkpoints/.gitkeep
 checkpoints/*_history.json
+.ruff_cache/

@@ -7,6 +7,11 @@
 semantic-channel coding 송수신기)를 Python/PyTorch로 처음부터 구현한 뒤 논문의 주요 실험
 (Fig. 6, 8, 9, 10, 13, Table II, III)을 축소된 규모로 재현·검증한 결과를 정리한 것입니다.
 
+[![CI](https://github.com/EHeum/DeepSC-PyTorch/actions/workflows/ci.yml/badge.svg)](https://github.com/EHeum/DeepSC-PyTorch/actions/workflows/ci.yml)
+
+> 관련 저장소: [DeepSC-Digital](https://github.com/EHeum/DeepSC-Digital) — 이 구현에 M-QAM constellation
+> 제약(DeepJSCC-Q 방식)을 더해 DeepSC를 디지털화하고 cliff 현상을 분석한 확장 프로젝트
+
 ---
 
 ## 1. 시스템 모델 분석
@@ -293,6 +298,24 @@ CPU에서 다른 학습과 동시에 측정한 값이라 절대값 비교는 의
 * 단일 seed 실험입니다.
 
 ---
+
+## 개발 환경
+
+```bash
+git clone https://github.com/EHeum/DeepSC-PyTorch.git && cd DeepSC-PyTorch
+python3 -m venv .venv && source .venv/bin/activate
+pip install torch --index-url https://download.pytorch.org/whl/cpu   # GPU라면 PyTorch 공식 안내에 맞는 wheel
+pip install -r requirements-dev.txt                                  # numpy, nltk, matplotlib, reedsolo, pytest, ruff …
+ruff check deepsc scripts tests                                      # lint
+pytest -q                                                            # 단위 테스트
+```
+
+* **CI** (`.github/workflows/ci.yml`): `main` push, PR, 수동 실행 시 GitHub Actions(ubuntu, Python 3.11,
+  CPU PyTorch)에서 ruff lint, pytest, 그리고 256문장 1 epoch 학습·평가 스모크 테스트를 돌립니다.
+* **Claude Code 클라우드 세션** (`.claude/hooks/session-start.sh`): 원격 세션이 시작될 때 의존성을
+  자동으로 설치합니다(동기 실행. 설치가 끝나야 세션이 시작됨).
+* 학습된 체크포인트(`checkpoints/*.pt`, 개당 약 22 MB)는 저장소에 포함하지 않습니다. 학습 곡선은
+  `results/*_history.json`, 로그는 `logs/`에 있습니다.
 
 ## 4. 실행 방법
 

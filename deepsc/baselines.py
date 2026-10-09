@@ -255,10 +255,10 @@ class TurboCode:
         """llrs: list of channel LLR arrays (one per sentence, same layout as encode)."""
         t, bsz = len(perm), len(llrs)
         ls, lp1, lp2, lk = (np.zeros((bsz, t)) for _ in range(4))
-        for i, (l, n) in enumerate(zip(llrs, lengths)):
+        for i, (llr, n) in enumerate(zip(llrs, lengths)):
             keep2 = perm < n
-            ls[i, :n], lp1[i, :n] = l[:n], l[n: 2 * n]
-            lp2[i, keep2] = l[2 * n: 2 * n + keep2.sum()]
+            ls[i, :n], lp1[i, :n] = llr[:n], llr[n: 2 * n]
+            lp2[i, keep2] = llr[2 * n: 2 * n + keep2.sum()]
             lk[i, n:] = -self.BIG  # known zero padding bits
         inv = np.argsort(perm)
         le2 = np.zeros((bsz, t))

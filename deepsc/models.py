@@ -77,8 +77,8 @@ class DeepSC(nn.Module):
         e = self.pos(self.embedding(src) * math.sqrt(self.d_model))
         m = self.semantic_encoder(e, src_key_padding_mask=pad_mask)
         z = self.channel_encoder(m)  # B x L x 2N
-        b, l, _ = z.shape
-        x = torch.complex(z[..., 0::2], z[..., 1::2]).reshape(b, l * self.n_sym)
+        b, seq_len, _ = z.shape
+        x = torch.complex(z[..., 0::2], z[..., 1::2]).reshape(b, seq_len * self.n_sym)
         sym_mask = (~pad_mask).repeat_interleave(self.n_sym, dim=1)
         return power_normalize(x, sym_mask), sym_mask
 
